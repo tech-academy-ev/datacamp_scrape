@@ -1,5 +1,10 @@
 const puppeteer = require("puppeteer");
 
+require('dotenv').config();
+
+const usr = process.env.USERNAME;
+const pwd = process.env.PASSWORD;
+
 const scrape = async () => {
     const browser = await puppeteer.launch();
     
