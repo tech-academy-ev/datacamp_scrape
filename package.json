@@ -1,0 +1,24 @@
+{
+  "name": "datacamp_scrape",
+  "version": "1.0.0",
+  "description": "Automating the evaluation of member progress via DataCamp leaderboard and profiles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tech-academy-ev/datacamp_scrape.git"
+  },
+  "author": "BenLucht",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tech-academy-ev/datacamp_scrape/issues"
+  },
+  "homepage": "https://github.com/tech-academy-ev/datacamp_scrape#readme",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
+    "dotenv": "^8.2.0",
+    "puppeteer": "^1.20.0"
+  }
+}
