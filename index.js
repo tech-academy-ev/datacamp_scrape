@@ -5,6 +5,10 @@ require('dotenv').config();
 const usr = process.env.USERNAME;
 const pwd = process.env.PASSWORD;
 
+const timeout = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const scrape = async () => {
     const browser = await puppeteer.launch();
     
