@@ -40,6 +40,15 @@ const scrape = async () => {
     // show url that was redirected to
     console.log('redirected to: ' + page.url());
 
+    // go to yearly leaderboard
+    await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2/leaderboard/year');
+
+    // wait until table is actually loaded
+    await page.waitForSelector('.dc-table__tr');
+
+    // wait some more to make sure
+    await timeout(5000);
+
     // make screenshot of where we are
     await page.screenshot({path: 'screenshot.png'});
 
