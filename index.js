@@ -49,6 +49,12 @@ const scrape = async () => {
     // wait some more to make sure
     await timeout(5000);
 
+    // get html of rendered site
+    const content = await page.content();
+
+    // write html to file for further development (without pinging datacamp too much)
+    fs.writeFile("./leaderboard.html", content, (err) => {if(err){console.log('couldnt write')}});
+
     // make screenshot of where we are
     await page.screenshot({path: 'screenshot.png'});
 
