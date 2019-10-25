@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const puppeteer = require("puppeteer");
 
 require('dotenv').config();
@@ -67,8 +69,10 @@ const getLeaderboard = async (page) => {
     // get html of rendered site
     const content = await page.content();
 
+    const id = moment().format();
+
     // make screenshot of where we are
-    await page.screenshot({path: 'screenshot.png'});
+    await page.screenshot({path: `screenshot${id}.png`});
 
     console.log('leaderboard loaded');
 
@@ -76,7 +80,7 @@ const getLeaderboard = async (page) => {
 }
 
 const scrape = async () => {
-    const browser = await puppeteer.launch({ "headless": false});
+    const browser = await puppeteer.launch({ "headless": true});
     
     const page = await browser.newPage();
 
