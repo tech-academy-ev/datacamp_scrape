@@ -95,21 +95,29 @@ const getLeaderboard = async (page) => {
     return links;
 }
 
-const scrape = async () => {
+const scrape = async (withLeaderboard, fromFile) => {
     const browser = await puppeteer.launch({ "headless": true});
     
     const page = await browser.newPage();
 
-    const leaderboardLinks = await getLeaderboard(page);
+    if(withLeaderboard){
+        // const leaderboardLinks = await getLeaderboard(page);
+    
+        // console.log(leaderboardLinks);
+    
+        // write html to file for further development (without pinging datacamp too much)
+        // fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+    }
 
-    console.log(leaderboardLinks);
-
-    // write html to file for further development (without pinging datacamp too much)
-    fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+    if(fromFile){
+        const leaderboadrLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
+    
+        console.log(leaderboadrLinks.split(','));
+    }
 
     // close browser 
     await browser.close();
 
 }
 
-scrape();
+scrape(false, true);
