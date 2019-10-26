@@ -1,6 +1,7 @@
 const moment = require('moment');
 const cheerio = require('cheerio');
 const puppeteer = require("puppeteer");
+const fs = require('fs');
 
 require('dotenv').config();
 
@@ -84,8 +85,8 @@ const getLeaderboard = async (page) => {
 
     let links = [];
     
-    // extract links to profiles from rows and push into links array
-    const row_array = $(rows.splice(1, 20)).each((i, element) => {
+    // extract links to profiles from rows and push into links array (.splice(1, n) to limit response)
+    const row_array = $(rows).each((i, element) => {
         const cells = $(element).find('td');
         const cell = $(cells).first();
         links.push($(cell).find('a').attr('href'));
@@ -104,7 +105,7 @@ const scrape = async () => {
     console.log(leaderboardLinks);
 
     // write html to file for further development (without pinging datacamp too much)
-    //fs.writeFile("./leaderboard.html", content, (err) => {if(err){console.log('couldnt write')}});
+    fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
 
     // close browser 
     await browser.close();
