@@ -16,12 +16,10 @@ const datacampLogin = async (page) => {
 
     // load sign in page
     await page.goto('https://www.datacamp.com/users/sign_in');
-    
     console.log('datacamp loaded');
     
     // type in username
     await page.type('#user_email', usr);
-    
     console.log('username entered');
     
     // click "next"-button and wait for website feedback
@@ -32,7 +30,6 @@ const datacampLogin = async (page) => {
     
     // type in password
     await page.type('#user_password', pwd);
-    
     console.log('password entered')
     
     // click "sign in"-button and wait for redirect page to load
@@ -59,12 +56,10 @@ const getLeaderboard = async (page) => {
 
     // go to yearly leaderboard
     await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2/leaderboard/year');
-
     console.log('leaderboard loading');
 
     // wait until table is actually loaded
     await page.waitForSelector('.dc-table__tr');
-
     console.log('leaderboard loaded');
 
     // wait some more to make sure
@@ -74,10 +69,8 @@ const getLeaderboard = async (page) => {
     const content = await page.content();
 
     const id = moment().format();
-
     // make screenshot of where we are
     await page.screenshot({path: `screenshot${id}.png`});
-
     console.log('leaderboard loaded');
 
     // load content into cheerio for parsing
@@ -98,12 +91,59 @@ const getLeaderboard = async (page) => {
     return links;
 };
 
+const parseProfile = (fromFile, content) => {
+    // from file either false or [urlParam, 'YYYYMMDD']
+
+    if(fromFile) {
+        content = fs.readFileSync(`./profile_${fromFile[0]}_${fromFile[1]}.html`, 'utf8');
+    }
+
+    // load content into cheerio for parsing
+    const $ = cheerio.load(content);
+
+    const name = $('h1').text();
+
+    const stats = $('.profile-header__stats').find('strong');
+
+    let statsList = [];
+
+    const statsMap = $(stats).each((i, element) => {
+        statsList.push($(element).text());
+    });
+
+    const xp = statsList[0];
+    const courseNum = statsList[1];
+    const exercisesNum = statsList[2];
+
+    console.log(name);
+    console.log(xp);
+    console.log(courseNum);
+    console.log(exercisesNum);
+
+    const courses = $('.profile-courses').find('.course-block');
+
+    let courseList = [];
+
+    const coursesMap = $(courses).each((i, element) => {
+        courseList.push($(element).find('h4').text());
+    })
+
+    console.log(courseList);
+}
+
 const readProfile = async (page, url) => {
 
     await page.goto(url);
-
     console.log(`profile ${url} loaded`);
 
+    const content = await page.content();
+
+    const urlParam = url.split('/');
+    const currDate = moment().format('YYYYMMDD');
+
+    fs.writeFile(`./profile_${urlParam[urlParam.length - 1]}_${currDate}.html`, content, (err) => {if(err){console.log('couldnt write')}});
+
+    parseProfile(false, content);
 }
 
 const scrape = async (withLeaderboard, fromFile) => {
@@ -118,7 +158,6 @@ const scrape = async (withLeaderboard, fromFile) => {
 
     if(withLeaderboard){
         const leaderboardLinks = await getLeaderboard(page);
-    
         console.log(leaderboardLinks);
     
         // write html to file for further development (without pinging datacamp too much)
@@ -130,8 +169,6 @@ const scrape = async (withLeaderboard, fromFile) => {
     
         leaderboardLinks = leaderboardLinks.split(',');
 
-        console.log(leaderboardLinks[1]);
-
         await readProfile(page, leaderboardLinks[1]);
     }
 
@@ -141,4 +178,5 @@ const scrape = async (withLeaderboard, fromFile) => {
 
 }
 
-scrape(false, true);
+scrape(true, false);
+//parseProfile(['niclaslindemann', '20191027'], false);
