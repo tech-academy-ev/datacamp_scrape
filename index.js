@@ -38,7 +38,6 @@ const datacampLogin = async (page) => {
     // click "sign in"-button and wait for redirect page to load
     await Promise.all([
         page.click('.js-modal-submit-button'),
-        //page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
     
     try {
@@ -99,6 +98,14 @@ const getLeaderboard = async (page) => {
     return links;
 };
 
+const readProfile = async (page, url) => {
+
+    await page.goto(url);
+
+    console.log(`profile ${url} loaded`);
+
+}
+
 const scrape = async (withLeaderboard, fromFile) => {
     const browser = await puppeteer.launch({ "headless": true});
     
@@ -115,18 +122,23 @@ const scrape = async (withLeaderboard, fromFile) => {
         console.log(leaderboardLinks);
     
         // write html to file for further development (without pinging datacamp too much)
-        //fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+        fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
     }
 
     if(fromFile){
-        const leaderboardLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
+        let leaderboardLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
     
-        console.log(leaderboardLinks.split(','));
+        leaderboardLinks = leaderboardLinks.split(',');
+
+        console.log(leaderboardLinks[1]);
+
+        await readProfile(page, leaderboardLinks[1]);
     }
+
 
     // close browser 
     await browser.close();
 
 }
 
-scrape(true, false);
+scrape(false, true);
