@@ -12,47 +12,51 @@ const timeout = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const getLeaderboard = async (page) => {
-    // to prevent mobile view
-    await page.setViewport({width: 1200, height: 720});
+const datacampLogin = async (page) => {
 
+    // load sign in page
     await page.goto('https://www.datacamp.com/users/sign_in');
-
+    
     console.log('datacamp loaded');
-
+    
     // type in username
     await page.type('#user_email', usr);
-
+    
     console.log('username entered');
-
+    
     // click "next"-button and wait for website feedback
     await Promise.all([
         page.click('.js-account-check-email'),
         page.waitForSelector('#user_password', { visible: true, }),
     ]);
-
+    
     // type in password
     await page.type('#user_password', pwd);
-
+    
     console.log('password entered')
-
+    
     // click "sign in"-button and wait for redirect page to load
     await Promise.all([
         page.click('.js-modal-submit-button'),
         //page.waitForNavigation({ waitUntil: 'networkidle2' }),
     ]);
-
+    
     try {
         await page.waitForNavigation({ waitUntil: 'networkidle2' });
     } catch (error) {
         console.log(error);
     }
-
+    
     // wait some more to make sure
     await timeout(5000);
-
+    
     // show url that was redirected to
     console.log('redirected to: ' + page.url());
+
+    return page;
+}
+
+const getLeaderboard = async (page) => {
 
     // go to yearly leaderboard
     await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2/leaderboard/year');
@@ -93,26 +97,31 @@ const getLeaderboard = async (page) => {
     });
 
     return links;
-}
+};
 
 const scrape = async (withLeaderboard, fromFile) => {
     const browser = await puppeteer.launch({ "headless": true});
     
-    const page = await browser.newPage();
+    let page = await browser.newPage();
+
+    // to prevent mobile view
+    await page.setViewport({width: 1200, height: 720});
+
+    page = await datacampLogin(page);
 
     if(withLeaderboard){
-        // const leaderboardLinks = await getLeaderboard(page);
+        const leaderboardLinks = await getLeaderboard(page);
     
-        // console.log(leaderboardLinks);
+        console.log(leaderboardLinks);
     
         // write html to file for further development (without pinging datacamp too much)
-        // fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+        //fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
     }
 
     if(fromFile){
-        const leaderboadrLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
+        const leaderboardLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
     
-        console.log(leaderboadrLinks.split(','));
+        console.log(leaderboardLinks.split(','));
     }
 
     // close browser 
@@ -120,4 +129,4 @@ const scrape = async (withLeaderboard, fromFile) => {
 
 }
 
-scrape(false, true);
+scrape(true, false);
