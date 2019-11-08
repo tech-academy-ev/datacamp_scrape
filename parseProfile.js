@@ -1,4 +1,5 @@
 const cheerio = require('cheerio');
+const fs = require('fs');
 
 const parseProfile = (fromFile, content) => {
     // from file either false or [urlParam, 'YYYYMMDD']
