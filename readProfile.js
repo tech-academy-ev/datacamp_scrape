@@ -1,4 +1,5 @@
 const moment = require('moment');
+const fs = require('fs');
 const parseProfile = require('./parseProfile');
 
 const readProfile = async (page, url) => {
