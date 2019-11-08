@@ -28,7 +28,7 @@ const datacampLogin = async (page, username, password) => {
     try {
         await page.waitForNavigation({ waitUntil: 'networkidle2' });
     } catch (error) {
-        console.log(error);
+        console.log('timeout error');
     }
     
     // wait some more to make sure
