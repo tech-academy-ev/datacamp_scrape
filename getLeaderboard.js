@@ -5,7 +5,8 @@ const cheerio = require('cheerio');
 const getLeaderboard = async (page) => {
 
     // go to yearly leaderboard
-    await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2/leaderboard/year');
+    // await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2/leaderboard/year');
+    await page.goto('https://www.datacamp.com/enterprise/marketing-analytics-marketing-2-aac75f17-7035-4029-a002-40e13ad970c8/leaderboard/year');
     console.log('leaderboard loading');
 
     // wait until table is actually loaded
