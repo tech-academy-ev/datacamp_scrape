@@ -35,7 +35,12 @@ const scrape = async (withLeaderboard, fromFile) => {
         leaderboardLinks = leaderboardLinks.split(',');
 
         for (let i=1; i < leaderboardLinks.length - 1; i++) { 
-            await readProfile(page, leaderboardLinks[i]);
+            try {
+                await readProfile(page, leaderboardLinks[i]);
+            } catch (e) {
+                console.log(e);
+                continue;
+            }
         }
 
     }
