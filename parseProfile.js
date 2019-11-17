@@ -1,7 +1,7 @@
 const cheerio = require('cheerio');
 const fs = require('fs');
 
-const parseProfile = (fromFile, content) => {
+const parseProfile = (fromFile, url, date, content) => {
     // from file either false or [urlParam, 'YYYYMMDD']
 
     if(fromFile) {
@@ -21,9 +21,11 @@ const parseProfile = (fromFile, content) => {
         statsList.push($(element).text());
     });
 
-    const xp = statsList[0];
+    let xp = statsList[0];
+    xp = xp.replace(/\,/g,'');
     const courseNum = statsList[1];
-    const exercisesNum = statsList[2];
+    let exercisesNum = statsList[2];
+    exercisesNum = exercisesNum.replace(/\,/g,'');
 
     console.log(name);
     console.log(xp);
@@ -39,6 +41,8 @@ const parseProfile = (fromFile, content) => {
     })
 
     console.log(courseList);
+    const data = `${url},${date},${name},${xp},${courseNum},${exercisesNum},[${courseList}]\n`
+    fs.appendFile("./data.txt", data, (err) => {if(err){console.log('couldnt append')}});
 }
 
 module.exports = parseProfile;

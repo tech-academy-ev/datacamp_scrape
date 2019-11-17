@@ -14,7 +14,7 @@ const readProfile = async (page, url) => {
 
     fs.writeFile(`./profile_${urlParam[urlParam.length - 1]}_${currDate}.html`, content, (err) => {if(err){console.log('couldnt write')}});
 
-    parseProfile(false, content);
+    parseProfile(false, url, currDate, content);
 }
 
 module.exports = readProfile;
