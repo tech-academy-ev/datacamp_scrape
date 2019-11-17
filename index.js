@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const fs = require('fs');
+const timeout = require('./timeout')
 
 const datacampLogin = require('./datacampLogin');
 const getLeaderboard = require('./getLeaderboard');
@@ -25,15 +26,18 @@ const scrape = async (withLeaderboard, fromFile) => {
         console.log(leaderboardLinks);
     
         // write html to file for further development (without pinging datacamp too much)
-        fs.writeFile("./leaderboard_links.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+        fs.writeFile("./leaderboard_links_ws1920.txt", leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
     }
 
     if(fromFile){
-        let leaderboardLinks = fs.readFileSync('./leaderboard_links.txt', 'utf8');
+        let leaderboardLinks = fs.readFileSync('./leaderboard_links_ws1920.txt', 'utf8');
     
         leaderboardLinks = leaderboardLinks.split(',');
 
-        await readProfile(page, leaderboardLinks[1]);
+        for (let i=1; i < leaderboardLinks.length - 1; i++) { 
+            await readProfile(page, leaderboardLinks[i]);
+        }
+
     }
 
 
