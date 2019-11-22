@@ -1,7 +1,9 @@
 const puppeteer = require("puppeteer");
 const timeout = require('./timeout')
+const fs = require('fs');
 
 const datacampLogin = require('./datacampLogin');
+const getLeaderboard = require('./getLeaderboard');
 
 require('dotenv').config();
 
@@ -33,6 +35,19 @@ class DatacampScraper {
         this.page = await datacampLogin(this.page, this.username, this.password);
     }
 
+    async getLeaderboard(filename, path) {
+        const leaderboardLinks = await getLeaderboard(this.page);
+
+        if(path) {
+            fs.mkdirSync(path);
+            path = path + "/";
+        } else {
+            path = "";
+        }
+
+        fs.writeFile("./" + path + filename, leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+    }
+
     getBrowser() {
         return this.browser;
     }
@@ -45,6 +60,7 @@ const mainFunc = async () => {
     test = new DatacampScraper(usr, pwd);
     await test.launchBrowser();
     await test.login();
+    await test.getLeaderboard('test.txt');
     await test.closeBrowser();
 }
 
