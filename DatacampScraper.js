@@ -4,6 +4,7 @@ const fs = require('fs');
 
 const datacampLogin = require('./datacampLogin');
 const getLeaderboard = require('./getLeaderboard');
+const readProfile = require('./readProfile');
 
 require('dotenv').config();
 
@@ -46,6 +47,24 @@ class DatacampScraper {
         }
 
         fs.writeFile("./" + path + filename, leaderboardLinks, (err) => {if(err){console.log('couldnt write')}});
+    }
+
+    async scrapeProfiles(fileName) {
+        let leaderboardLinks = fs.readFileSync(fileName, 'utf8');
+        
+        // make sure each Profile is scraped only once
+        leaderboardLinks = leaderboardLinks.split(',');
+        leaderboardLinks = new Set(leaderboardLinks);
+        leaderboardLinks = [...leaderboardLinks];
+
+        for (let i=1; i < leaderboardLinks.length - 1; i++) { 
+            try {
+                await readProfile(this.page, leaderboardLinks[i]);
+            } catch (e) {
+                console.log(e);
+                continue;
+            }
+        }
     }
 
     getBrowser() {
