@@ -12,7 +12,11 @@ const readProfile = async (page, url) => {
     const urlParam = url.split('/');
     const currDate = moment().format('YYYYMMDD');
 
-    fs.writeFile(`./profile_${urlParam[urlParam.length - 1]}_${currDate}.html`, content, (err) => {if(err){console.log('couldnt write')}});
+    if(!fs.existsSync('./' + currDate)){
+        fs.mkdirSync(currDate);
+    }
+
+    fs.writeFile(`./${currDate}/profile_${urlParam[urlParam.length - 1]}_${currDate}.html`, content, (err) => {if(err){console.log('couldnt write')}});
 
     parseProfile(false, url, currDate, content);
 }
