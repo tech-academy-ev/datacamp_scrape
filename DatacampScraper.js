@@ -54,12 +54,12 @@ class DatacampScraper {
         
         // make sure each Profile is scraped only once
         leaderboardLinks = leaderboardLinks.split(',');
-        leaderboardLinks = new Set(leaderboardLinks);
+        leaderboardLinks = new Set(leaderboardLinks.slice(1));
         leaderboardLinks = [...leaderboardLinks];
 
-        for (let i=1; i < leaderboardLinks.length - 1; i++) { 
+        for (let link of leaderboardLinks) { 
             try {
-                await readProfile(this.page, leaderboardLinks[i]);
+                await readProfile(this.page, link);
             } catch (e) {
                 console.log(e);
                 continue;
@@ -77,10 +77,12 @@ class DatacampScraper {
 
 const mainFunc = async () => {
     test = new DatacampScraper(usr, pwd);
-    await test.launchBrowser();
-    await test.login();
-    await test.getLeaderboard('test.txt');
-    await test.closeBrowser();
+    //await test.launchBrowser();
+    //await test.login();
+    //await test.getLeaderboard('test.txt');
+    //await test.closeBrowser();
+
+    await test.scrapeProfiles('leaderboard_links_ws1920.txt');
 }
 
 mainFunc();
