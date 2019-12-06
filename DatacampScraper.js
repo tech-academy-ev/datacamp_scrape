@@ -20,7 +20,7 @@ class DatacampScraper {
     }
 
     async launchBrowser() {
-        this.browser = await puppeteer.launch({ "headless": false});
+        this.browser = await puppeteer.launch({ "headless": false, dumpio: true, args: ['--no-sandbox'] });
     }
 
     async closeBrowser() {
@@ -76,13 +76,18 @@ class DatacampScraper {
 };
 
 const mainFunc = async () => {
-    test = new DatacampScraper(usr, pwd);
-    //await test.launchBrowser();
-    //await test.login();
-    //await test.getLeaderboard('test.txt');
-    //await test.closeBrowser();
 
+    test = new DatacampScraper(usr, pwd);
+    
+    await test.launchBrowser();
+    
+    await test.login();
+    
+    // await test.getLeaderboard('test.txt');
     await test.scrapeProfiles('leaderboard_links_ws1920.txt');
+    
+    await test.closeBrowser();
+    
 }
 
 mainFunc();
